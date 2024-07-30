@@ -1,11 +1,12 @@
 use winit::{
-    event::WindowEvent,
+    event::{WindowEvent, KeyEvent},
     event_loop::{
         EventLoop,
         ActiveEventLoop,
     },
     window::{Window, WindowId},
     application::ApplicationHandler,
+    keyboard::{KeyCode, PhysicalKey},
 };
 
 #[derive(Default)]
@@ -20,7 +21,14 @@ impl ApplicationHandler for App {
 
     fn window_event(&mut self, event_loop: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
         match event {
-            WindowEvent::CloseRequested => {
+            WindowEvent::CloseRequested
+            | WindowEvent::KeyboardInput {
+                event: KeyEvent {
+                    physical_key: PhysicalKey::Code(KeyCode::Escape),
+                    ..
+                },
+                ..
+            } => {
                 println!("The close button was pressed; stopping");
                 event_loop.exit();
             },
