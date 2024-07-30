@@ -15,6 +15,22 @@ struct App {
     window: Option<Window>,
 }
 
+// Packing all logic into one struct at the moment.
+struct State<'a> {
+    surface: wgpu::Surface<'a>,
+    device: wgpu::Device,
+    queue: wgpu::Queue,
+    config: wgpu::SurfaceConfiguration,
+    size: winit::dpi::PhysicalSize<u32>,
+    window: &'a Window,
+}
+
+impl<'a> State<'a> {
+    async fn new(window: &Window) -> State<'a> {
+        todo!()
+    }
+}
+
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         self.window = Some(event_loop.create_window(Window::default_attributes().with_title("The Little Cosmonaut")).unwrap());
