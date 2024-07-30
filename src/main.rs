@@ -8,6 +8,7 @@ use winit::{
     application::ApplicationHandler,
     keyboard::{KeyCode, PhysicalKey},
 };
+use tracing::Level;
 
 #[derive(Default)]
 struct App {
@@ -29,7 +30,6 @@ impl ApplicationHandler for App {
                 },
                 ..
             } => {
-                println!("The close button was pressed; stopping");
                 event_loop.exit();
             },
             _ => (),
@@ -38,6 +38,7 @@ impl ApplicationHandler for App {
 }
 
 fn main() {
+    tracing_subscriber::fmt().init();
     let mut app = App::default();
     let event_loop = EventLoop::new().unwrap();
 
