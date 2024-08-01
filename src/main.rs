@@ -10,9 +10,15 @@ use winit::{
 };
 use tracing::Level;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 struct App {
     window: Option<Window>,
+}
+
+impl App {
+    fn window(&self) -> Option<&Window> {
+        self.window.as_ref()
+    }
 }
 
 // Packing all logic into one struct at the moment.
@@ -76,12 +82,12 @@ impl<'a> State<'a> {
         };
 
         Self {
-            window,
             surface,
             device,
             queue,
             config,
             size,
+            window,
         }
     }
 }
@@ -111,8 +117,14 @@ impl ApplicationHandler for App {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
+
     let mut app = App::default();
     let event_loop = EventLoop::new().unwrap();
 
+    // Run event loop which opens window and listens for events.
     event_loop.run_app(&mut app);
+
+    // Create state.
+    let window = &app.window();
+    let state = State::new(window.unwrap());
 }
