@@ -22,6 +22,7 @@ impl App {
 }
 
 // Packing all logic into one struct at the moment.
+#[derive(Debug)]
 struct State<'a> {
     surface: wgpu::Surface<'a>,
     device: wgpu::Device,
@@ -90,6 +91,10 @@ impl<'a> State<'a> {
             window,
         }
     }
+
+    fn print_self(&self) {
+        println!("State: {:?}", self);
+    }
 }
 
 impl ApplicationHandler for App {
@@ -127,4 +132,5 @@ async fn main() {
     // Create state.
     let window = &app.window();
     let state = State::new(window.unwrap());
+    state.await.print_self();
 }
