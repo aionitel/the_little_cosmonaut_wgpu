@@ -8,14 +8,15 @@ use winit::{
     application::ApplicationHandler,
     keyboard::{KeyCode, PhysicalKey},
 };
-use tracing::Level;
+use tracing::{Level, info};
 
 #[derive(Default, Debug)]
-struct App {
+struct App<'a> {
     window: Option<Window>,
+    state: Option<State<'a>>,
 }
 
-impl App {
+impl<'a> App<'a> {
     fn window(&self) -> Option<&Window> {
         self.window.as_ref()
     }
@@ -95,13 +96,23 @@ impl<'a> State<'a> {
     fn print_self(&self) {
         println!("State: {:?}", self);
     }
+
+    fn print_device(&self) {
+        println!("Device: {:?}", self.device);
+    }
+
+    fn render(&self) {
+        todo!()
+    }
 }
 
-impl ApplicationHandler for App {
+impl<'a> ApplicationHandler for App<'a> {
+    // Runs once when app starts. (Startup system)
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         self.window = Some(event_loop.create_window(Window::default_attributes().with_title("The Little Cosmonaut")).unwrap());
     }
 
+    // Runs anytime window catches event.
     fn window_event(&mut self, event_loop: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
         match event {
             WindowEvent::CloseRequested
@@ -119,8 +130,7 @@ impl ApplicationHandler for App {
     }
 }
 
-#[tokio::main]
-async fn main() {
+async fn run() {
     tracing_subscriber::fmt().init();
 
     let mut app = App::default();
@@ -128,9 +138,9 @@ async fn main() {
 
     // Run event loop which opens window and listens for events.
     event_loop.run_app(&mut app);
+}
 
-    // Create state.
-    let window = &app.window();
-    let state = State::new(window.unwrap());
-    state.await.print_self();
+#[tokio::main]
+async fn main() {
+    run().await;
 }
