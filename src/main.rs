@@ -1,3 +1,4 @@
+use std::sync::{Arc, Mutex};
 use winit::{
     event::{WindowEvent, KeyEvent},
     event_loop::{
@@ -8,7 +9,7 @@ use winit::{
     application::ApplicationHandler,
     keyboard::{KeyCode, PhysicalKey},
 };
-use tracing::{Level, info};
+use tracing::{Level, info, trace};
 
 #[derive(Default, Debug)]
 struct App<'a> {
@@ -168,8 +169,15 @@ async fn run() {
     let mut app = App::default();
     let event_loop = EventLoop::new().unwrap();
 
-    // Run event loop which opens window and listens for events.
     event_loop.run_app(&mut app);
+
+    let window = app.window().unwrap();
+    let state = State::new(&window).await;
+
+    match state.render() {
+        Ok(_) => {},
+        Err(e) => info!("Error: {:?}", e),
+    }
 }
 
 #[tokio::main]
